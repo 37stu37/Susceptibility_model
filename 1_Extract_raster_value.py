@@ -9,8 +9,10 @@ from tqdm import tqdm
 import os
 import glob
 
-path_to_rasterlist = ""
+p = "/Volumes/LaCie/workfolder/sajag_nepal/susceptibility/Alex_nocoseismic_model/10m_rasters"
 crs = 32645
+csize = 10000
+
 
 def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, CRS):
     # Make a search criteria to select the raster files
@@ -41,7 +43,7 @@ def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, 
     points = []
     for x in tqdm(cols[:-1]):
         for y in rows[:-1]:
-            points.append(Point(x,y))
+            points.append(Point(x, y))
 
     grid = gpd.GeoDataFrame({'geometry': points})
     grid.set_crs(epsg=CRS, inplace=True)
@@ -52,7 +54,7 @@ def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, 
 
     # Extract raster values for each points
     for r in rasterlist:
-        coords = [(x, y) for x, y in zip(grid.x, grid.y)]
+        coords = [(x, y) for x, y in zip(grid.centroid.x, grid.centroid.y)]
         print(" ")
         print(" ")
         print(f'{r.split("/")[-1][:-4]}')
@@ -65,6 +67,6 @@ def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, 
 
     print(" ")
     print(" ")
-    print(f"grid_wrastervalues_{cellsize}m created")
+    print(f"grid with raster values {cellsize}m created")
 
     return grid
