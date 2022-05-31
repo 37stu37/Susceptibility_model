@@ -52,7 +52,7 @@ def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, 
 
     # Extract raster values for each points
     for r in rasterlist:
-        coords = [(x, y) for x, y in zip(grid.centroid.x, grid.centroid.y)]
+        coords = [(x, y) for x, y in zip(grid.x, grid.y)]
         print(" ")
         print(" ")
         print(f'{r.split("/")[-1][:-4]}')
