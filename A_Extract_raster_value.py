@@ -1,25 +1,31 @@
+import glob
+import os
+
 import geopandas as gpd
+import numpy as np
 import rasterio as rio
-from shapely.geometry import Polygon
 from shapely.geometry import Point
 from shapely.geometry import box
-import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
-import os
-import glob
+
+from B_Bin_raster import *
 
 p = "/Volumes/LaCie/workfolder/sajag_nepal/susceptibility/Alex_nocoseismic_model/10m_rasters"
 crs = 32645
-csize = 10000
+csize = 10
+s_criteria = "AW3D_10m_Nepal_UTM45N_mask*"
 
 
-def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, CRS):
+def raster_value_at_polygon_grid(path_to_rasters, search_criteria, cellsize, CRS):
     # Make a search criteria to select the raster files
-    search_criteria = search_criteria
-    q = os.path.join(path_to_rasterlist, search_criteria)
-    rasterlist = glob.glob(q)
-    print(rasterlist)
+    r_search = os.path.join(path_to_rasters, search_criteria)
+    # Need the landslide presence raster
+    ls_search = os.path.join(path_to_rasters, 'Landslide_presence_10m*')
+
+    rasterlist = [glob.glob(q) for q in [r_search, ls_search]]
+    rasterlist = [item for sublist in rasterlist for item in sublist] # need to flatten the list
+
+    print(rasterlist[0])
 
     ra = rio.open(rasterlist[0])
     bounds = ra.bounds
@@ -70,3 +76,5 @@ def raster_value_at_polygon_grid(path_to_rasterlist, search_criteria, cellsize, 
     print(f"grid with raster values {cellsize}m created")
 
     return grid
+
+grid = raster_value_at_polygon_grid(p, s_criteria, csize, crs)
